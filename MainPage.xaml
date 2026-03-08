@@ -1,0 +1,29 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AppCompras.MainPage"
+             Title="Home">
+
+    <VerticalStackLayout Padding="20" Spacing="10">
+
+        <Entry x:Name="DescricaoEntry" Placeholder="Descrição" />
+        <Entry x:Name="QuantidadeEntry" Placeholder="Quantidade" Keyboard="Numeric" />
+        <Entry x:Name="PrecoEntry" Placeholder="Preço" Keyboard="Numeric" />
+
+        <Button Text="Salvar" Clicked="OnSalvarClicked"/>
+
+        <CollectionView ItemsSource="{Binding Produtos}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Stroke="Gray" StrokeThickness="1" Margin="5" Padding="10">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Descricao}" FontAttributes="Bold"/>
+                            <Label Text="{Binding Quantidade}" />
+                            <Label Text="{Binding Preco}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>
