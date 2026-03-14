@@ -1,46 +1,75 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using AppCompras.Models;
+using System.Diagnostics.CodeAnalysis;
+using AppCompras.Helpers;
+using Microsoft.Maui.Controls;
 
 namespace AppCompras;
 
 public partial class MainPage : ContentPage
 {
-    // Coleção explicitamente instanciada para evitar aviso do analisador (IDE0028)
-    public ObservableCollection<Produto> Produtos { get; } = new ObservableCollection<Produto>();
+    // Lista principal de produtos
+    public ObservableCollection<Produto> Produtos { get; } = new();
 
+    // Lista filtrada que aparece na tela
+    public ObservableCollection<Produto> ProdutosFiltrados { get; } = new();
+
+    [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "MAUI BindingContext is used cross-platform in this app.")]
     public MainPage()
     {
         InitializeComponent();
+        // BindingContext do MAUI é usado em todas as plataformas no app; suprimimos o aviso do analisador para evitar ruído.
         BindingContext = this;
     }
 
+    [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "MAUI Entry.Text is used cross-platform in this app.")]
     private void OnSalvarClicked(object sender, EventArgs e)
     {
-        // Ler de forma segura os textos das Entry (podem ser null antes do InitializeComponent)
+        // Acessa os membros gerados pelo XAML (evita duplicação/ambiguidade)
         var descricao = DescricaoEntry?.Text;
         var quantidadeText = QuantidadeEntry?.Text;
         var precoText = PrecoEntry?.Text;
 
-        // Validar e converter: quantidade -> int, preco -> double (Produto.Preco é double)
         if (!string.IsNullOrWhiteSpace(descricao) &&
             int.TryParse(quantidadeText, out int quantidade) &&
             double.TryParse(precoText, out double preco))
         {
-            Produtos.Add(new Produto
+            var produto = new Produto
             {
-                Descricao = descricao,
+                Descricao = descricao!,
                 Quantidade = quantidade,
                 Preco = preco
-            });
+            };
 
-            // Limpar campos se não nulos
-            if (DescricaoEntry is not null)
+            Produtos.Add(produto);
+            ProdutosFiltrados.Add(produto);
+
+            if (DescricaoEntry != null)
                 DescricaoEntry.Text = string.Empty;
-            if (QuantidadeEntry is not null)
+
+            if (QuantidadeEntry != null)
                 QuantidadeEntry.Text = string.Empty;
-            if (PrecoEntry is not null)
+
+            if (PrecoEntry != null)
                 PrecoEntry.Text = string.Empty;
+        }
+    }
+
+    [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "MAUI TextChangedEventArgs is used cross-platform in this app.")]
+    private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+    {
+        // Evita ToLower/ToUpper e usa comparação explícita ignorando maiúsculas/minúsculas
+        var texto = e.NewTextValue ?? string.Empty;
+
+        ProdutosFiltrados.Clear();
+
+        foreach (var produto in Produtos)
+        {
+            if (!string.IsNullOrEmpty(produto.Descricao) &&
+                produto.Descricao.Contains(texto, StringComparison.OrdinalIgnoreCase))
+            {
+                ProdutosFiltrados.Add(produto);
+            }
         }
     }
 }

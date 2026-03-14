@@ -11,7 +11,11 @@
 
         <Button Text="Salvar" Clicked="OnSalvarClicked"/>
 
-        <CollectionView ItemsSource="{Binding Produtos}">
+        <SearchBar 
+            Placeholder="Buscar produto..."
+            TextChanged="OnSearchTextChanged"/>
+
+        <CollectionView ItemsSource="{Binding ProdutosFiltrados}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border Stroke="Gray" StrokeThickness="1" Margin="5" Padding="10">
@@ -26,4 +30,5 @@
         </CollectionView>
 
     </VerticalStackLayout>
+
 </ContentPage>
