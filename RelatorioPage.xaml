@@ -1,0 +1,33 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AppCompras.RelatorioPage"
+             Title="Relatório">
+
+    <VerticalStackLayout Padding="20" Spacing="10">
+
+        <Label Text="Relatório por Período"
+               FontSize="20"
+               HorizontalOptions="Center"/>
+
+        <DatePicker x:Name="dtInicio"/>
+        <DatePicker x:Name="dtFim"/>
+
+        <Button Text="Filtrar"
+                Clicked="OnFiltrarClicked"/>
+
+        <CollectionView x:Name="listaRelatorio">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Stroke="Gray" Margin="5" Padding="10">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Descricao}" FontAttributes="Bold"/>
+                            <Label Text="{Binding DataCadastro, StringFormat='Data: {0:dd/MM/yyyy}'}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+
+</ContentPage>

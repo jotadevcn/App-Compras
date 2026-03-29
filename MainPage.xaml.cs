@@ -1,31 +1,26 @@
-﻿using System;
+﻿using AppCompras.Helpers;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using AppCompras.Helpers;
-using Microsoft.Maui.Controls;
 
 namespace AppCompras;
 
 public partial class MainPage : ContentPage
 {
-    // Lista principal de produtos
     public ObservableCollection<Produto> Produtos { get; } = new();
-
-    // Lista filtrada que aparece na tela
     public ObservableCollection<Produto> ProdutosFiltrados { get; } = new();
 
     [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "MAUI BindingContext is used cross-platform in this app.")]
     public MainPage()
     {
         InitializeComponent();
-        // BindingContext do MAUI é usado em todas as plataformas no app; suprimimos o aviso do analisador para evitar ruído.
         BindingContext = this;
     }
 
-    [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "MAUI Entry.Text is used cross-platform in this app.")]
     private void OnSalvarClicked(object sender, EventArgs e)
     {
-        // Acessa os membros gerados pelo XAML (evita duplicação/ambiguidade)
         var descricao = DescricaoEntry?.Text;
         var quantidadeText = QuantidadeEntry?.Text;
         var precoText = PrecoEntry?.Text;
@@ -38,7 +33,8 @@ public partial class MainPage : ContentPage
             {
                 Descricao = descricao!,
                 Quantidade = quantidade,
-                Preco = preco
+                Preco = preco,
+                DataCadastro = DataPicker.Date ?? DateTime.Now 
             };
 
             Produtos.Add(produto);
@@ -55,10 +51,8 @@ public partial class MainPage : ContentPage
         }
     }
 
-    [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "MAUI TextChangedEventArgs is used cross-platform in this app.")]
     private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
     {
-        // Evita ToLower/ToUpper e usa comparação explícita ignorando maiúsculas/minúsculas
         var texto = e.NewTextValue ?? string.Empty;
 
         ProdutosFiltrados.Clear();
@@ -71,5 +65,11 @@ public partial class MainPage : ContentPage
                 ProdutosFiltrados.Add(produto);
             }
         }
+    }
+
+    
+    private async void OnRelatorioClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new RelatorioPage(Produtos));
     }
 }

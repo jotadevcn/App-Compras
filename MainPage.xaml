@@ -9,6 +9,9 @@
         <Entry x:Name="QuantidadeEntry" Placeholder="Quantidade" Keyboard="Numeric" />
         <Entry x:Name="PrecoEntry" Placeholder="Preço" Keyboard="Numeric" />
 
+        
+        <DatePicker x:Name="DataPicker" />
+
         <Button Text="Salvar" Clicked="OnSalvarClicked"/>
 
         <SearchBar 
@@ -23,11 +26,17 @@
                             <Label Text="{Binding Descricao}" FontAttributes="Bold"/>
                             <Label Text="{Binding Quantidade}" />
                             <Label Text="{Binding Preco}" />
+                            
+                            <Label Text="{Binding DataCadastro, StringFormat='Data: {0:dd/MM/yyyy}'}"/>
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+
+        
+        <Button Text="Ver Relatório"
+                Clicked="OnRelatorioClicked"/>
 
     </VerticalStackLayout>
 
